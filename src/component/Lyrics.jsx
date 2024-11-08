@@ -10,16 +10,21 @@ export default function Lyrics() {
     fetchData(artist, title);
   }
 
-  function fetchData(a, b) {
-    console.log(a + " " + b);
+  const fetchData = async (a, b) => {
+    try {
+      const lyricsResponse = await axios.get(
+        `https://api.lyrics.ovh/v1/${a}/${b}`
+      );
+      setShowLyrics(lyricsResponse.data.lyrics);
 
-    // fetch data from api
-
-    axios.get(`https://api.lyrics.ovh/v1/${a}/${b}`).then((res) => {
-      console.log(res.data.lyrics);
-      setShowLyrics(res.data.lyrics);
-    });
-  }
+      await axios.post("http://127.0.0.1:8000/api/storelyrics", {
+        title: a,
+        lyrics: b,
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
 
   return (
     <div>
